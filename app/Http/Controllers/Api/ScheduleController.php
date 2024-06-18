@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Schedule;
+use App\Models\JenisPekerjaan;
+use App\Models\Lokasi;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
@@ -13,6 +16,51 @@ class ScheduleController extends Controller
     {
         $schedule = Schedule::all();
         return response()->json($schedule);
+    }
+
+    public function listJadwal(Request $request)
+    {
+        // Ambil user_id dari query parameter
+        $userId = $request->input('user_id');
+
+        // Lakukan query untuk mendapatkan jadwal dengan user_id yang diberikan
+        $jadwal = DB::table('schedules')
+            ->join('users', 'schedules.user_id', '=', 'users.id')
+            ->select('schedules.id as scheduleId', 'users.name', 'schedules.tanggal', 'schedules.status')
+            ->where('schedules.user_id', $userId)
+            ->get();
+
+        return response()->json($jadwal);
+    }
+
+    public function detailJadwal(Request $request)
+    {
+        $scheduleId = $request->input('scheduleId');
+        $schedule = Schedule::findOrFail($scheduleId);
+
+        // Menguraikan string menjadi array
+        $jenisPekerjaanIds = json_decode($schedule->jenis_pekerjaan);
+        $lokasiIds = json_decode($schedule->lokasi_kerja);
+
+        // Mendapatkan nama pekerjaan
+        $jenisPekerjaan = JenisPekerjaan::whereIn('id', $jenisPekerjaanIds)->pluck('nama')->toArray();
+
+        // Mendapatkan nama lokasi
+        $lokasi = Lokasi::whereIn('id', $lokasiIds)->pluck('nama')->toArray();
+
+        // Membuat response
+        $response = [
+            'scheduleId' => $schedule->id,
+            'jenisPekerjaan' => $jenisPekerjaan,
+            'lokasiKerja' => $lokasi,
+            'jamMulai' => $schedule->jam_mulai,
+            'jamSelesai' => $schedule->jam_selesai,
+            'istirahatMulai' => $schedule->istirahat_mulai,
+            'istirahatSelesai' => $schedule->istirahat_selesai,
+            'catatan' => $schedule->catatan
+        ];
+
+        return response()->json($response);
     }
 
     // Menyimpan jadwal kerja baru ke database dan mengembalikan data yang disimpan dalam format JSON
