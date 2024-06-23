@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +39,9 @@ class RegisterController extends Controller
 
         //return response JSON user is created
         if($user) {
+            $memberRole = Role::where('name', 'member')->first();
+            $user->roles()->attach($memberRole);
+
             return response()->json([
                 'success' => true,
                 'user'    => $user,  
