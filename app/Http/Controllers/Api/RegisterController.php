@@ -38,13 +38,13 @@ class RegisterController extends Controller
         ]);
 
         //return response JSON user is created
-        if($user) {
+        if ($user) {
             $memberRole = Role::where('name', 'member')->first();
             $user->roles()->attach($memberRole);
 
             return response()->json([
                 'success' => true,
-                'user'    => $user,  
+                'user'    => $user,
             ], 201);
         }
 

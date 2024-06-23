@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 
 /**
  * route "/register"
@@ -26,4 +27,8 @@ Route::middleware(['auth:api', 'role:admin,member'])->group(function () {
     Route::apiResource('lokasi', App\Http\Controllers\Api\LokasiController::class);
     Route::post('/listjadwal', [App\Http\Controllers\Api\ScheduleController::class, 'listJadwal']);
     Route::post('/schedule/detail', [App\Http\Controllers\Api\ScheduleController::class, 'detailJadwal']);
+});
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    Route::post('/roles', [RoleController::class, 'store']);
+    Route::post('/users/{user}/roles', [RoleController::class, 'assignRole']);
 });

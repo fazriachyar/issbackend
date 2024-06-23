@@ -93,11 +93,11 @@ class ScheduleController extends Controller
     public function update(Request $request, $id)
     {
         $schedule = Schedule::findOrFail($id);
-        
+
         // Atau secara lebih dinamis dengan:
         $schedule->fill($request->all());
         $schedule->save();
-        
+
         return response()->json(['message' => 'Schedule updated successfully', 'data' => $schedule]);
     }
 
@@ -111,12 +111,12 @@ class ScheduleController extends Controller
     }
 
     /**
-    * Update status jadwal kerja.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+     * Update status jadwal kerja.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function updateStatus(Request $request, $id)
     {
         $schedule = Schedule::findOrFail($id);

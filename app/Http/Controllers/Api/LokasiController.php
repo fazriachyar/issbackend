@@ -13,24 +13,24 @@ class LokasiController extends Controller
         $lokasi = Lokasi::all();
         return response()->json($lokasi);
     }
-    
+
     public function store(Request $request)
     {
         $lokasi = Lokasi::create($request->all());
         return response()->json($lokasi, 201);
     }
-    
+
     public function show(Lokasi $lokasi)
     {
         return response()->json($lokasi);
     }
-    
+
     public function update(Request $request, Lokasi $lokasi)
     {
         $lokasi->update($request->all());
         return response()->json($lokasi);
     }
-    
+
     public function destroy(Lokasi $lokasi)
     {
         $lokasi->delete();
